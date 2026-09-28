@@ -15,7 +15,7 @@ GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 MAX_TOKENS = 700
 MAX_HISTORY_MESSAGES = 16     # ~8 exchanges; keeps requests small and predictable to bill/rate-limit
 
-DEFAULT_MODEL = {"anthropic": "claude-haiku-4-5-20251001", "groq": "llama-3.3-70b-versatile"}
+DEFAULT_MODEL = {"anthropic": "claude-haiku-4-5-20251001", "groq": "openai/gpt-oss-120b"}
 
 SYSTEM = """You are the KanoFarm AI assistant for smallholder farmers across Nigeria.
 Rules:
