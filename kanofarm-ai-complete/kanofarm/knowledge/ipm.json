@@ -1,0 +1,43 @@
+{
+  "version": "0.1",
+  "review_status": "draft_unreviewed",
+  "source_note": "General integrated pest management principles. Not crop-specific and not yet reviewed by an agronomist. Contains no pesticide products or dosages.",
+  "categories": {
+    "disease": {
+      "prevention": [{"action": "Use healthy seed or seedlings and rotate crops.", "why": "Many disease-causing organisms survive on seed, soil and crop residue."}],
+      "cultural": [{"action": "Remove severely affected leaves and keep the field clean of infected plant debris.", "why": "This lowers the source of spores or bacteria that can spread to nearby plants."},
+                   {"action": "Avoid working in the field when plants are wet and avoid keeping leaves wet.", "why": "Wet leaves help many diseases spread."}],
+      "mechanical": [{"action": "Take removed plant material out of the field and do not leave it lying between plants.", "why": "Left on the ground it can keep infecting the crop."}],
+      "biological": [{"action": "Ask an agricultural extension officer whether a suitable biological product exists for this crop and problem.", "why": "Suitability depends on the crop, the cause and local availability."}],
+      "chemical": [{"action": "Use chemical control only if a registered product is verified for this crop and problem, and follow its label.", "why": "Wrong products or doses can damage crops, health and the environment."}]
+    },
+    "pest": {
+      "prevention": [{"action": "Check plants regularly, including the underside of leaves.", "why": "Finding pests early makes them easier to control."}],
+      "cultural": [{"action": "Keep the field free of weeds and old crop residue that shelter pests.", "why": "Weeds and residue can host pests between crops."}],
+      "mechanical": [{"action": "Hand-pick larvae, egg masses or heavily damaged leaves where the infestation is small.", "why": "Removing pests early can stop numbers from growing."}],
+      "biological": [{"action": "Avoid spraying broad-spectrum insecticides unnecessarily and ask an extension officer about natural enemies and biological options.", "why": "Natural enemies help keep pests down and can be killed by unnecessary sprays."}],
+      "chemical": [{"action": "Use chemical control only if a registered product is verified for this crop and pest, and follow its label.", "why": "Wrong products or doses can damage crops, health and the environment."}]
+    },
+    "nutrient_deficiency": {
+      "prevention": [{"action": "Get a soil test before deciding on fertilizer.", "why": "Similar leaf symptoms can have different causes."}],
+      "cultural": [{"action": "Add compost, manure or crop residues to build up soil organic matter.", "why": "Organic matter supports nutrient supply and water holding."}],
+      "mechanical": [], "biological": [],
+      "chemical": [{"action": "Ask an extension officer for fertilizer type and rate based on a soil test.", "why": "Rates depend on soil, crop and stage; this app does not give dosages."}]
+    },
+    "environmental_stress": {
+      "prevention": [{"action": "Compare the symptoms with recent weather: drought, heat, waterlogging or wind.", "why": "Stress symptoms can look like disease."}],
+      "cultural": [{"action": "Manage water where possible: irrigate in dry periods, improve drainage after heavy rain.", "why": "Water stress in either direction damages crops."}],
+      "mechanical": [], "biological": [], "chemical": []
+    },
+    "unknown": {
+      "prevention": [{"action": "Take a clearer photo of one affected leaf in good light, and another of the whole plant.", "why": "A clear image improves any AI or expert assessment."}],
+      "cultural": [{"action": "Check nearby plants and note how many are affected and when it started.", "why": "Spread pattern helps experts tell causes apart."}],
+      "mechanical": [], "biological": [],
+      "chemical": [{"action": "Do not apply pesticides until the cause is confirmed by an extension officer or expert.", "why": "Treating the wrong cause wastes money and can cause harm."}]
+    },
+    "healthy": {
+      "prevention": [{"action": "Keep checking the crop regularly.", "why": "Problems are easier to manage when found early."}],
+      "cultural": [], "mechanical": [], "biological": [], "chemical": []
+    }
+  }
+}

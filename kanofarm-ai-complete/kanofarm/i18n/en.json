@@ -1,0 +1,8 @@
+{
+  "rain_expected_delay_irrigation": "Rain is forecast in the next 2 days. Consider delaying irrigation.",
+  "heavy_rainfall_risk": "Heavy rainfall is forecast. Check drainage and avoid field operations on waterlogged soil. This is an estimate, not a guarantee.",
+  "heat_stress_risk": "Very hot days are forecast. Watch crops for wilting and check soil moisture.",
+  "dry_spell_recent": "Little or no rain has fallen recently. Check soil moisture and consider irrigation where available.",
+  "dry_spell_forecast": "A dry period is forecast. Check soil moisture and consider irrigation where available.",
+  "high_water_demand_check_moisture": "Crop water demand is high and little rain is forecast. Check soil moisture more often."
+}

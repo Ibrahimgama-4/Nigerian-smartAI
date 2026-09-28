@@ -1,0 +1,5 @@
+{
+  "_comment": "EXAMPLE FORMAT ONLY. Build the real file from your trained class list; a human agronomist must assign categories. Class folder names use crop___condition.",
+  "tomato___example_condition": {"crop": "tomato", "condition": "Example condition", "category": "disease"},
+  "tomato___healthy": {"crop": "tomato", "condition": "Healthy", "category": "healthy"}
+}

@@ -1,0 +1,14 @@
+{
+  "_source": "AfroTools agriculture dataset (afrotools.com/agriculture/harvest-date/nigeria), itself citing FAO crop growth tables, CGIAR trials and national extension services",
+  "_status": "draft_unreviewed",
+  "_note": "A planning reference, not agronomic advice or an official government dataset. Rainfall figures are broad annual averages for the zone, not a measurement for any specific farm. Confirm locally with an extension officer.",
+  "retrieved": "2026-09-25",
+  "zones": {
+    "north_west": {"name": "North West", "states": ["Kano","Kaduna","Katsina","Sokoto","Zamfara","Kebbi","Jigawa"], "annual_rainfall_mm_approx": 800, "major_crops": ["sorghum","millet","rice","maize"]},
+    "north_east": {"name": "North East", "states": ["Borno","Yobe","Adamawa","Bauchi","Gombe","Taraba"], "annual_rainfall_mm_approx": 700, "major_crops": ["millet","sorghum","groundnut","cowpea"]},
+    "north_central": {"name": "North Central", "states": ["Benue","Kogi","Kwara","Niger","Nasarawa","Plateau","Federal Capital Territory"], "annual_rainfall_mm_approx": 1200, "major_crops": ["yam","soybean","rice","sorghum"]},
+    "south_west": {"name": "South West", "states": ["Lagos","Ogun","Oyo","Osun","Ondo","Ekiti"], "annual_rainfall_mm_approx": 1500, "major_crops": ["cocoa","cassava","maize","yam"]},
+    "south_east": {"name": "South East", "states": ["Enugu","Anambra","Imo","Abia","Ebonyi"], "annual_rainfall_mm_approx": 1800, "major_crops": ["cassava","yam","rice","oil_palm"]},
+    "south_south": {"name": "South South", "states": ["Rivers","Bayelsa","Delta","Akwa Ibom","Cross River","Edo"], "annual_rainfall_mm_approx": 2500, "major_crops": ["oil_palm","cassava","plantain","rice"]}
+  }
+}

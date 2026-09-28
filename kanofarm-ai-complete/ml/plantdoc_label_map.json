@@ -1,0 +1,26 @@
+{
+  "_status": "DRAFT. Class names come from the published PlantDoc class list. Categories were assigned by the app author and MUST be reviewed by an agronomist before farmers see them.",
+  "_warnings": {
+    "maize": "PlantDoc has NO healthy-maize class. A maize model trained only on it must call every leaf diseased. Add maize___healthy images before enabling maize.",
+    "soybean": "PlantDoc's only soybean class is a healthy-leaf class, so no soybean disease can be detected. Excluded."
+  },
+  "classes": {
+    "Corn leaf blight": {"crop": "maize", "condition": "Leaf blight", "category": "disease"},
+    "Corn rust leaf": {"crop": "maize", "condition": "Rust", "category": "disease"},
+    "Corn Gray leaf spot": {"crop": "maize", "condition": "Gray leaf spot", "category": "disease"},
+    "Tomato Early blight leaf": {"crop": "tomato", "condition": "Early blight", "category": "disease"},
+    "Tomato leaf late blight": {"crop": "tomato", "condition": "Late blight", "category": "disease"},
+    "Tomato mold leaf": {"crop": "tomato", "condition": "Leaf mold", "category": "disease"},
+    "Tomato leaf bacterial spot": {"crop": "tomato", "condition": "Bacterial spot", "category": "disease"},
+    "Tomato Septoria leaf spot": {"crop": "tomato", "condition": "Septoria leaf spot", "category": "disease"},
+    "Tomato leaf mosaic virus": {"crop": "tomato", "condition": "Mosaic virus", "category": "disease"},
+    "Tomato leaf yellow virus": {"crop": "tomato", "condition": "Yellow virus", "category": "disease"},
+    "Tomato two spotted spider mites leaf": {"crop": "tomato", "condition": "Two-spotted spider mites", "category": "pest"},
+    "Tomato leaf": {"crop": "tomato", "condition": "Healthy", "category": "healthy"},
+    "Potato leaf early blight": {"crop": "potato", "condition": "Early blight", "category": "disease"},
+    "Potato leaf late blight": {"crop": "potato", "condition": "Late blight", "category": "disease"},
+    "Potato leaf": {"crop": "potato", "condition": "Healthy", "category": "healthy"},
+    "Bell_pepper leaf spot": {"crop": "pepper", "condition": "Leaf spot", "category": "disease"},
+    "Bell_pepper leaf": {"crop": "pepper", "condition": "Healthy", "category": "healthy"}
+  }
+}
