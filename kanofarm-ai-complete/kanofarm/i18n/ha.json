@@ -1,0 +1,9 @@
+{
+  "_status": "DRAFT: AI-translated (Claude), not yet checked by a native Hausa speaker or agronomist. Diacritics/tone were not the concern here (Hausa's Latin script doesn't need them the way Yoruba/Igbo do), but agronomic word choice still needs a human check before this is marked reviewed.",
+  "rain_expected_delay_irrigation": "An yi hasashen ruwan sama a cikin kwanaki 2 masu zuwa. Ku yi la'akari da jinkirta ban ruwa.",
+  "heavy_rainfall_risk": "An yi hasashen ruwan sama mai yawa. Ku duba magudanan ruwa kuma ku guji aikin gona a lokacin da kasa take da ruwa sosai. Wannan hasashe ne, ba tabbaci ba.",
+  "heat_stress_risk": "An yi hasashen zafi mai tsanani. Ku lura da amfanin gona don ganin ko yana yankwane, kuma ku duba dandanon kasa.",
+  "dry_spell_recent": "Ba a sami isasshen ruwan sama ba a kwanan nan. Ku duba dandanon kasa kuma ku yi la'akari da ban ruwa idan akwai.",
+  "dry_spell_forecast": "An yi hasashen fari. Ku duba dandanon kasa kuma ku yi la'akari da ban ruwa idan akwai.",
+  "high_water_demand_check_moisture": "Amfanin gona yana bukatar ruwa mai yawa, kuma ba a hasashen ruwan sama mai yawa ba. Ku rika duba dandanon kasa akai-akai."
+}
