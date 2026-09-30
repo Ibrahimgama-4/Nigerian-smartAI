@@ -1,0 +1,9 @@
+{
+  "_status": "DRAFT: AI-translated (Claude); Igbo confidence is the lowest of the three languages here, particularly around tone and some agronomic terms. This MUST be checked by a native Igbo speaker before it is treated as reliable -- until then, treat it as a rough starting point only.",
+  "rain_expected_delay_irrigation": "A na-ele na mmiri ga-ezo n'ime ubochi abuo na-abia. Tulee igbu oge mmiri ncha n'ubi.",
+  "heavy_rainfall_risk": "A na-ele na oke mmiri ozuzo ga-ezo. Lelee ka mmiri si aga n'ubi ma zere oru ubi mgbe ala jupturu na mmiri. Nke a bu atumatu, o abughi ihe doro anya kpamkpam.",
+  "heat_stress_risk": "A na-ele na ubochi ga-adi oke okpomoku. Lelee ihe okuku gi maka mkponwu ma lelekwa mmiri di n'ala.",
+  "dry_spell_recent": "Enweghi mmiri zuru ezu n'oge na-adibeghi anya. Lelee mmiri di n'ala ma tulee igba mmiri n'ubi ma o buru na o kwe omume.",
+  "dry_spell_forecast": "A na-ele na oge ukwu mmiri ga-adi. Lelee mmiri di n'ala ma tulee igba mmiri n'ubi ma o buru na o kwe omume.",
+  "high_water_demand_check_moisture": "Ihe okuku choro mmiri buru ibu, ma a naghi ele na mmiri ga-ezo nke ukwuu. Na-elele mmiri di n'ala mgbe niile."
+}
