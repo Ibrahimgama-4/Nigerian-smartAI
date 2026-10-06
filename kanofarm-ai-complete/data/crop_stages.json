@@ -1,0 +1,44 @@
+{
+  "_status": "draft_unreviewed",
+  "retrieved": "2026-10-05",
+  "banner": "DRAFT growth stages. Lengths are FAO's general examples for four broad stages, not a local forecast and not checked by an agronomist. Your variety, planting date and weather can shift them by weeks. Use them as a guide and confirm with your extension officer.",
+  "source": {
+    "name": "FAO Irrigation and Drainage Paper 56 (Crop evapotranspiration), Chapter 6, Table 11: lengths of crop development stages",
+    "url": "https://www.fao.org/4/x0490e/x0490e0b.htm",
+    "caveat": "FAO says these values are useful only as a general guide and are average lengths for the regions and periods named, intended as examples; local observation should be used wherever possible."
+  },
+  "stages": [
+    {"key": "initial", "name": "Early growth",
+     "what": "From planting until the young crop starts to cover the ground.",
+     "tip": "Small plants use little water. Check that seedlings have come up evenly."},
+    {"key": "development", "name": "Crop development",
+     "what": "The crop grows fast and covers more of the ground each week.",
+     "tip": "The crop is using more water each week. Check soil moisture."},
+    {"key": "mid", "name": "Mid-season",
+     "what": "The crop is at or near full cover. This period often includes flowering.",
+     "tip": "Usually the period of highest water use, and it often includes flowering. Check soil moisture often."},
+    {"key": "late", "name": "Late season (ripening)",
+     "what": "Leaves begin to age and yellow and the crop ripens towards harvest.",
+     "tip": "The crop is ripening. Plan your harvest, drying and storage."}
+  ],
+  "crops": {
+    "maize":     {"lengths": [20, 35, 40, 30], "region_fit": "nigeria",
+                  "reference": "Maize (grain), planted June, Nigeria (humid)"},
+    "groundnut": {"lengths": [25, 35, 45, 25], "region_fit": "west_africa",
+                  "reference": "Groundnut, dry season, West Africa"},
+    "rice":      {"lengths": [30, 30, 60, 30], "region_fit": "tropics",
+                  "reference": "Rice, planted December or May, tropics (150-day example)"},
+    "soybean":   {"lengths": [15, 15, 40, 15], "region_fit": "tropics",
+                  "reference": "Soybeans, planted December, tropics"},
+    "cassava":   {"lengths": [20, 40, 90, 60], "region_fit": "tropics",
+                  "reference": "Cassava, first-year cycle, rainy season, tropical regions"},
+    "millet":    {"lengths": [15, 25, 40, 25], "region_fit": "other",
+                  "reference": "Millet, planted June, Pakistan"}
+  },
+  "region_notes": {
+    "nigeria": "Example measured in humid Nigeria.",
+    "west_africa": "Example from West Africa (dry-season crop).",
+    "tropics": "Example from tropical conditions, not specifically Nigeria.",
+    "other": "Example from other regions, so treat it as a rough guide only."
+  }
+}
