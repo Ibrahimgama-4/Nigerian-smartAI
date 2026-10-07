@@ -1,0 +1,428 @@
+"""Input validation in plain Python (no framework) so it is unit-tested. Raises ValidationError."""
+import base64, binascii, json, re
+from datetime import date, timedelta
+from pathlib import Path
+from . import market as mk
+from .market_prices import normalize_product
+from . import planting_plan as _pp
+
+LANGUAGES = ("en", "ha", "yo", "ig", "pcm")
+_STATE_NAMES = {s["name"] for s in json.loads(
+    (Path(__file__).resolve().parent.parent.parent / "data" / "nigeria_states.json").read_text(encoding="utf-8"))["states"]}
+_STATE_LOOKUP = {n.lower(): n for n in _STATE_NAMES}
+
+def nigeria_state(d, key="state", required=False):
+    v = d.get(key)
+    if v is None or v == "":
+        if required: raise ValidationError(f"{key} is required")
+        return None
+    if not isinstance(v, str) or v.strip().lower() not in _STATE_LOOKUP:
+        raise ValidationError(f"{key} must be one of Nigeria's 36 states or 'Federal Capital Territory'")
+    return _STATE_LOOKUP[v.strip().lower()]
+
+class ValidationError(ValueError):
+    pass
+
+_UUID = re.compile(r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
+MAX_IMAGE_BYTES = 2_000_000
+
+def uuid_str(v, name="id"):
+    if not isinstance(v, str) or not _UUID.match(v):
+        raise ValidationError(f"{name} is not valid")
+    return v
+
+def _text(d, key, max_len, required=False):
+    v = d.get(key)
+    if v is None or v == "":
+        if required: raise ValidationError(f"{key} is required")
+        return None
+    if not isinstance(v, str): raise ValidationError(f"{key} must be text")
+    v = v.strip()
+    if len(v) > max_len: raise ValidationError(f"{key} is too long")
+    if required and not v: raise ValidationError(f"{key} is required")
+    return v or None
+
+def _num(d, key, lo, hi, required=False):
+    v = d.get(key)
+    if v is None or v == "":
+        if required: raise ValidationError(f"{key} is required")
+        return None
+    try: f = float(v)
+    except (TypeError, ValueError): raise ValidationError(f"{key} must be a number")
+    if f != f or not (lo <= f <= hi): raise ValidationError(f"{key} must be between {lo} and {hi}")
+    return f
+
+def _int(d, key, lo, hi, required=False):
+    f = _num(d, key, lo, hi, required)
+    if f is None: return None
+    if f != int(f): raise ValidationError(f"{key} must be a whole number")
+    return int(f)
+
+def _date(d, key, required=False):
+    v = d.get(key)
+    if v is None or v == "":
+        if required: raise ValidationError(f"{key} is required")
+        return None
+    try: return date.fromisoformat(str(v)).isoformat()
+    except ValueError: raise ValidationError(f"{key} must be a date (YYYY-MM-DD)")
+
+def farm_payload(d: dict) -> dict:
+    return {"name": _text(d, "name", 120, True), "state": nigeria_state(d, required=True), "lga": _text(d, "lga", 80), "ward": _text(d, "ward", 80),
+            "community": _text(d, "community", 80),
+            "latitude": _num(d, "latitude", 4, 14, True), "longitude": _num(d, "longitude", 2.5, 15, True),
+            "size_ha": _num(d, "size_ha", 0.001, 100000), "irrigation_type": _text(d, "irrigation_type", 60),
+            "notes": _text(d, "notes", 1000)}
+
+def farm_crop_payload(d: dict) -> dict:
+    planting = _date(d, "planting_date", True)
+    harvest = _date(d, "expected_harvest_date")
+    if date.fromisoformat(planting) > date.today(): raise ValidationError("planting_date cannot be in the future")
+    if harvest and harvest < planting: raise ValidationError("expected_harvest_date is before planting_date")
+    return {"crop_id": uuid_str(d.get("crop_id"), "crop_id"), "variety": _text(d, "variety", 80),
+            "planting_date": planting, "expected_harvest_date": harvest}
+
+OBS_KINDS = {"planting","germination","observation","pest","disease","treatment","fertilizer",
+             "irrigation","harvest","weather_event","note"}
+
+def observation_payload(d: dict) -> dict:
+    kind = d.get("kind")
+    if kind not in OBS_KINDS: raise ValidationError("kind is not valid")
+    out = {"kind": kind, "observed_on": _date(d, "observed_on", True), "text": _text(d, "text", 2000)}
+    if d.get("farm_crop_id"): out["farm_crop_id"] = uuid_str(d["farm_crop_id"], "farm_crop_id")
+    if d.get("client_id"): out["client_id"] = uuid_str(d["client_id"], "client_id")    # phone-made id: makes a re-sent record harmless
+    return out
+
+def soil_payload(d: dict) -> dict:
+    out = {"soil_type": _text(d, "soil_type", 60), "ph": _num(d, "ph", 3, 10),
+           "organic_matter_pct": _num(d, "organic_matter_pct", 0, 100),
+           "nitrogen": _num(d, "nitrogen", 0, 1e6), "phosphorus": _num(d, "phosphorus", 0, 1e6),
+           "potassium": _num(d, "potassium", 0, 1e6), "npk_units_method": _text(d, "npk_units_method", 120),
+           "p_bray1_ppm": _num(d, "p_bray1_ppm", 0, 1000), "k_exch_cmolkg": _num(d, "k_exch_cmolkg", 0, 20),
+           "lab_name": _text(d, "lab_name", 120),
+           "previous_crop": _text(d, "previous_crop", 60), "fertilizer_applied": _text(d, "fertilizer_applied", 200)}
+    rd = _date(d, "recorded_on")
+    if rd:
+        if rd > (date.today() + timedelta(days=1)).isoformat(): raise ValidationError("recorded_on cannot be in the future")
+        out["recorded_on"] = rd                       # left out when blank so the database default (today) applies
+    return out
+
+# ---------- input safety and fertiliser plan ----------
+INPUT_KINDS = ("agrochemical", "fertilizer", "seed", "other")
+REPORT_ACTIONS = {"reviewed": "reviewed", "forwarded": "forwarded", "closed": "closed"}
+FERT_ZONES = ("all", "north_west", "north_east", "north_central", "south_west", "south_east", "south_south")
+
+def input_check_payload(d: dict) -> str:
+    q = _text(d, "query", 120, True)
+    if len(q) < 3: raise ValidationError("query is too short")
+    return q
+
+def input_report_payload(d: dict) -> dict:
+    kind = d.get("kind")
+    if kind not in INPUT_KINDS: raise ValidationError("kind is not valid")
+    problem = _text(d, "problem", 500, True)
+    if len(problem) < 5: raise ValidationError("problem is too short")
+    name = _text(d, "product_name", 120, True)
+    if len(name) < 2: raise ValidationError("product_name is too short")
+    out = {"kind": kind, "product_name": name, "problem": problem, "state": nigeria_state(d), "lga": _text(d, "lga", 80)}
+    bo = _date(d, "bought_on")
+    if bo and bo > date.today().isoformat(): raise ValidationError("bought_on cannot be in the future")
+    out["bought_on"] = bo
+    return out
+
+def input_report_review_payload(d: dict) -> dict:
+    st = d.get("status")
+    if st not in REPORT_ACTIONS: raise ValidationError("status must be reviewed, forwarded or closed")
+    return {"status": st, "admin_note": _text(d, "admin_note", 300)}
+
+def fertilizer_reco_payload(d: dict) -> dict:
+    zone = d.get("zone")
+    if zone not in FERT_ZONES: raise ValidationError("zone is not valid")
+    out = {"zone": zone, "crop_slug": _text(d, "crop_slug", 40, True),
+           "n_kg_ha": _num(d, "n_kg_ha", 0, 500), "p2o5_kg_ha": _num(d, "p2o5_kg_ha", 0, 500), "k2o_kg_ha": _num(d, "k2o_kg_ha", 0, 500),
+           "notes": _text(d, "notes", 600), "source_name": _text(d, "source_name", 200, True), "source_url": _text(d, "source_url", 500),
+           "source_year": _int(d, "source_year", 1980, 2100), "last_verified": _date(d, "last_verified", True), "expires_at": _date(d, "expires_at", True)}
+    if len(out["source_name"]) < 3: raise ValidationError("source_name is too short")
+    if out["n_kg_ha"] is None and out["p2o5_kg_ha"] is None and out["k2o_kg_ha"] is None:
+        raise ValidationError("enter at least one nutrient rate")
+    if out["source_url"] and not re.match(r"^https?://", out["source_url"]): raise ValidationError("source_url must start with http:// or https://")
+    if out["expires_at"] <= out["last_verified"]: raise ValidationError("expires_at must be after last_verified")
+    return out
+
+def sniff_image(b: bytes):
+    if b[:3] == b"\xff\xd8\xff": return "image/jpeg"
+    if b[:8] == b"\x89PNG\r\n\x1a\n": return "image/png"
+    if b[:4] == b"RIFF" and b[8:12] == b"WEBP": return "image/webp"
+    return None
+
+def scan_payload(d: dict) -> dict:
+    raw = d.get("image_b64")
+    if not isinstance(raw, str) or not raw: raise ValidationError("image is required")
+    if len(raw) > MAX_IMAGE_BYTES * 4 // 3 + 16: raise ValidationError("image is too large")
+    try: img = base64.b64decode(raw, validate=True)
+    except (binascii.Error, ValueError): raise ValidationError("image is not valid")
+    if len(img) > MAX_IMAGE_BYTES: raise ValidationError("image is too large")
+    mt = sniff_image(img)
+    if not mt: raise ValidationError("image must be JPEG, PNG or WebP")   # content sniffed, client type ignored
+    q = d.get("quality")
+    if not isinstance(q, dict): raise ValidationError("quality metrics are required")
+    quality = {"brightness": _num(q, "brightness", 0, 255, True), "sharpness": _num(q, "sharpness", 0, 1e7, True)}
+    return {"image": img, "media_type": mt, "quality": quality,
+            "crop_hint": _text(d, "crop_hint", 40),
+            "farm_id": uuid_str(d["farm_id"], "farm_id") if d.get("farm_id") else None,
+            "contribute_image": d.get("contribute_image") is True}
+
+def alert_rule_payload(d: dict) -> dict:
+    t = d.get("alert_type")
+    if t not in {"heavy_rain","dry_spell","heat_stress","high_water_demand","rain_delay_irrigation"}:
+        raise ValidationError("alert_type is not valid")
+    return {"alert_type": t, "enabled": d.get("enabled") is not False, "threshold": _num(d, "threshold", 0, 1000)}
+
+def feedback_payload(d: dict) -> dict:
+    return {"topic": _text(d, "topic", 40) or "general", "message": _text(d, "message", 2000, True)}
+
+def review_payload(d: dict) -> dict:
+    v = d.get("verdict")
+    if v not in {"correct","incorrect","alternative","needs_more_info"}: raise ValidationError("verdict is not valid")
+    return {"verdict": v, "alternative_label": _text(d, "alternative_label", 120), "notes": _text(d, "notes", 1000)}
+
+def pesticide_payload(d: dict) -> dict:
+    out = {"product_name": _text(d, "product_name", 120, True), "active_ingredient": _text(d, "active_ingredient", 200, True),
+           "manufacturer": _text(d, "manufacturer", 120), "registration_number": _text(d, "registration_number", 60, True),
+           "registration_status": d.get("registration_status"),
+           "formulation": _text(d, "formulation", 60), "target_crop": _text(d, "target_crop", 40, True),
+           "target_pest_or_disease": _text(d, "target_pest_or_disease", 120, True),
+           "application_info": _text(d, "application_info", 1000), "safety_info": _text(d, "safety_info", 1000),
+           "pre_harvest_interval_days": _int(d, "pre_harvest_interval_days", 0, 365),
+           "source_name": _text(d, "source_name", 200, True), "source_url": _text(d, "source_url", 500),
+           "last_verified": _date(d, "last_verified", True), "expires_at": _date(d, "expires_at", True)}
+    if out["registration_status"] not in {"registered","suspended","withdrawn","unknown"}:
+        raise ValidationError("registration_status is not valid")
+    if out["expires_at"] <= out["last_verified"]: raise ValidationError("expires_at must be after last_verified")
+    return out
+
+MAX_CHAT_HISTORY = 16
+MAX_CHAT_MESSAGE_CHARS = 1000        # a farmer's new question
+MAX_HISTORY_MESSAGE_CHARS = 1500     # earlier turns are trimmed to this, never rejected (AI replies can run to ~2,500 characters)
+
+def chat_history(d) -> list:
+    """Earlier turns are context only, so over-long or surplus turns are trimmed instead of rejected.
+    (Rejecting them made every follow-up question fail once one long AI reply was in the chat.)"""
+    if d is None: return []
+    if not isinstance(d, list): raise ValidationError("history must be a list")
+    out = []
+    for m in d[-MAX_CHAT_HISTORY:]:                                  # keep the newest turns
+        if not isinstance(m, dict) or m.get("role") not in ("user", "assistant"):
+            raise ValidationError("each history item needs a role of 'user' or 'assistant'")
+        c = m.get("content")
+        if not isinstance(c, str) or not c.strip(): raise ValidationError("content is required")
+        text = c.strip()
+        if len(text) > MAX_HISTORY_MESSAGE_CHARS: text = text[:MAX_HISTORY_MESSAGE_CHARS].rstrip() + " …"
+        out.append({"role": m["role"], "content": text})
+    while out and out[0]["role"] != "user": out.pop(0)               # providers require the conversation to start with the user
+    return out
+
+def assistant_payload(d: dict) -> dict:
+    msg = d.get("message")
+    if isinstance(msg, str) and len(msg.strip()) > MAX_CHAT_MESSAGE_CHARS:
+        raise ValidationError(f"Your question is too long. Please keep it under {MAX_CHAT_MESSAGE_CHARS} characters.")
+    return {"message": _text(d, "message", MAX_CHAT_MESSAGE_CHARS, True),
+            "history": chat_history(d.get("history")),
+            "farm_id": uuid_str(d["farm_id"], "farm_id") if d.get("farm_id") else None,
+            "lang": d.get("lang") if d.get("lang") in LANGUAGES else "en"}
+
+
+# ---------------------------------------------------------------- Farm Market
+def _decode_photo(raw, i):
+    if not isinstance(raw, str) or not raw: raise ValidationError(f"photo {i} is not valid")
+    if len(raw) > mk.MAX_IMAGE_BYTES * 4 // 3 + 16: raise ValidationError(f"photo {i} is too large; try a smaller photo")
+    try: img = base64.b64decode(raw, validate=True)
+    except (binascii.Error, ValueError): raise ValidationError(f"photo {i} is not valid")
+    if len(img) > mk.MAX_IMAGE_BYTES: raise ValidationError(f"photo {i} is too large; try a smaller photo")
+    mt = sniff_image(img)
+    if not mt: raise ValidationError(f"photo {i} must be a JPEG, PNG or WebP image")
+    return img, mt
+
+def _clean_text(d, key, max_len, required=False, min_len=0):
+    v = _text(d, key, max_len, required)
+    if v is None: return None
+    v = mk.strip_control(v).strip()
+    if len(v) < min_len: raise ValidationError(f"{key} is too short")
+    return v or None
+
+def market_payload(d: dict) -> dict:
+    kind = d.get("kind", "for_sale")
+    if kind not in mk.KINDS: raise ValidationError("kind is not valid")
+    category = d.get("category")
+    if category not in mk.CATEGORIES: raise ValidationError("category is not valid")
+    if d.get("consent_public_contact") is not True:
+        raise ValidationError("You must agree that your phone number will be visible to everyone")
+    phone = mk.normalize_phone(d.get("contact_phone"))
+    if not phone: raise ValidationError("Enter a Nigerian mobile number, for example 0803 123 4567")
+    qty = _num(d, "quantity", 0, 1e9)
+    qty_unit = d.get("quantity_unit") or None
+    if qty is not None and qty_unit not in mk.UNITS: raise ValidationError("quantity_unit is not valid")
+    price = _num(d, "price_ngn", 0, 1e10)
+    price_unit = d.get("price_unit") or None
+    if price is not None and price_unit not in mk.UNITS: raise ValidationError("price_unit is not valid")
+    photos = d.get("images") or []
+    if not isinstance(photos, list) or len(photos) > mk.MAX_IMAGES:
+        raise ValidationError(f"You can add at most {mk.MAX_IMAGES} photos")
+    images = [_decode_photo(p, i + 1) for i, p in enumerate(photos)]
+    if kind == "for_sale" and not images: raise ValidationError("Please add at least one photo of the product")
+    listing = {
+        "kind": kind, "title": _clean_text(d, "title", 100, True, 3), "category": category,
+        "product": _clean_text(d, "product", 60), "description": _clean_text(d, "description", 1000),
+        "quantity": qty, "quantity_unit": qty_unit if qty is not None else None,
+        "price_ngn": price, "price_unit": price_unit if price is not None else None,
+        "negotiable": d.get("negotiable") is True,
+        "state": nigeria_state(d, required=True), "lga": _clean_text(d, "lga", 80),
+        "contact_phone": phone, "seller_name": _clean_text(d, "seller_name", 80),
+    }
+    if kind == "for_sale" and category in ("produce", "livestock") and not listing["product"]:
+        raise ValidationError("Please say what the product is, for example maize or goat")
+    return {"listing": listing, "images": images}
+
+def market_action_payload(d: dict) -> str:
+    a = d.get("action")
+    if a not in ("sold", "active", "renew"): raise ValidationError("action is not valid")
+    return a
+
+def market_report_payload(d: dict) -> str:
+    return _clean_text(d, "reason", 300) or ""
+
+def market_moderation_payload(d: dict) -> str:
+    a = d.get("action")
+    if a not in ("restore", "remove"): raise ValidationError("action is not valid")
+    return a
+
+
+# ---------------------------------------------------------------- alert delivery preferences
+ALERT_LEVELS = ("info", "watch", "warning")
+
+def alert_prefs_payload(d: dict) -> dict:
+    """Phone channels need a Nigerian mobile number AND explicit consent; otherwise they cannot be switched on."""
+    out = {"push_enabled": d.get("push_enabled") is True, "whatsapp_enabled": d.get("whatsapp_enabled") is True,
+           "sms_enabled": d.get("sms_enabled") is True, "phone_consent": d.get("phone_consent") is True,
+           "stage_reminders": d.get("stage_reminders") is not False}
+    level = d.get("min_level") or "watch"
+    if level not in ALERT_LEVELS: raise ValidationError("min_level is not valid")
+    out["min_level"] = level
+    raw_phone = d.get("phone")
+    phone = mk.normalize_phone(raw_phone) if raw_phone not in (None, "") else None
+    if raw_phone not in (None, "") and not phone:
+        raise ValidationError("Enter a Nigerian mobile number, for example 0803 123 4567")
+    if (out["whatsapp_enabled"] or out["sms_enabled"]):
+        if not phone: raise ValidationError("Enter your phone number to receive WhatsApp or SMS alerts")
+        if not out["phone_consent"]: raise ValidationError("Please agree that we may message this number")
+    # a number is only kept while consent is given
+    out["phone"] = phone if out["phone_consent"] else None
+    qs, qe = _int(d, "quiet_start", 0, 23), _int(d, "quiet_end", 0, 23)
+    if (qs is None) != (qe is None): raise ValidationError("Set both quiet hours (start and end), or neither")
+    out["quiet_start"], out["quiet_end"] = qs, qe
+    return out
+
+def push_subscription_payload(d: dict) -> dict:
+    keys = d.get("keys") if isinstance(d.get("keys"), dict) else {}
+    ep = d.get("endpoint")
+    if not isinstance(ep, str) or not ep.startswith("https://") or not (20 <= len(ep) <= 1000):
+        raise ValidationError("endpoint is not valid")
+    p256, auth = keys.get("p256dh"), keys.get("auth")
+    for name, val, lo, hi in (("p256dh", p256, 20, 200), ("auth", auth, 8, 100)):
+        if not isinstance(val, str) or not (lo <= len(val) <= hi): raise ValidationError(f"{name} is not valid")
+    return {"endpoint": ep, "p256dh": p256, "auth": auth}
+
+
+def market_price_query(d: dict) -> dict:
+    """Validates the query for the price endpoints (state, days, product, unit). Used before anything is sent to the database."""
+    state = nigeria_state(d) if d.get("state") else None
+    days = _int(d, "days", 7, 180) or 60
+    out = {"state": state, "days": days}
+    if "product" in d:
+        product = normalize_product(d.get("product"))
+        if not product: raise ValidationError("product is required")
+        unit = d.get("unit")
+        if unit not in mk.UNITS: raise ValidationError("unit is not valid")
+        out.update({"product": product, "unit": unit})
+    return out
+
+
+# ---------------------------------------------------------------- farm finances
+INCOME_CATEGORIES = ("sale", "other_income")
+EXPENSE_CATEGORIES = ("seed", "fertilizer", "pesticide", "labour", "equipment", "irrigation", "transport",
+                      "land_rent", "processing", "other_expense")
+
+def finance_payload(d: dict, today=None) -> dict:
+    from datetime import timedelta
+    today = today or date.today()
+    kind = d.get("kind")
+    if kind not in ("income", "expense"): raise ValidationError("kind must be income or expense")
+    category = d.get("category")
+    if category not in (INCOME_CATEGORIES if kind == "income" else EXPENSE_CATEGORIES):
+        raise ValidationError("category is not valid for this kind of entry")
+    amount = _num(d, "amount_ngn", 0, 1e11, True)
+    if amount <= 0: raise ValidationError("amount_ngn must be more than zero")
+    when = _date(d, "entry_date", True)
+    if date.fromisoformat(when) > today + timedelta(days=1): raise ValidationError("entry_date cannot be in the future")
+    out = {"kind": kind, "category": category, "amount_ngn": round(amount, 2), "entry_date": when,
+           "season": _clean_text(d, "season", 40), "note": _clean_text(d, "note", 300)}
+    if d.get("farm_crop_id"): out["farm_crop_id"] = uuid_str(d["farm_crop_id"], "farm_crop_id")
+    if d.get("client_id"): out["client_id"] = uuid_str(d["client_id"], "client_id")
+    return out
+
+
+# ---------------------------------------------------------------- Verified seller badge
+_LONG_DIGITS = re.compile(r"\d{9,}")
+
+def verification_request_payload(d: dict) -> dict:
+    """A seller asks for the badge. Evidence is described in words only: the app never collects ID numbers or documents."""
+    phone = mk.normalize_phone(d.get("phone"))
+    if not phone: raise ValidationError("Enter the Nigerian mobile number buyers use to reach you, for example 0803 123 4567")
+    kind = d.get("proof_kind")
+    if kind not in mk.PROOF_KINDS: raise ValidationError("proof_kind is not valid")
+    detail = _clean_text(d, "proof_detail", 300, True, 3)
+    if _LONG_DIGITS.search(re.sub(r"[\s\-().]", "", detail)):
+        raise ValidationError("Please describe your evidence in words. Do not type ID, NIN, BVN, bank or phone numbers here.")
+    if d.get("consent") is not True:
+        raise ValidationError("You must agree that an administrator may phone this number to check it is yours")
+    return {"phone": phone, "proof_kind": kind, "proof_detail": detail}
+
+def verification_review_payload(d: dict) -> dict:
+    """An administrator's decision. Approving requires ticking both checks, so the rule 'phone confirmed + evidence seen' is enforced."""
+    action = d.get("action")
+    if action not in ("approve", "reject", "revoke"): raise ValidationError("action is not valid")
+    note = _clean_text(d, "note", 300)
+    if action in ("reject", "revoke") and not note: raise ValidationError("Please give a short reason")
+    months = _int(d, "months", 1, mk.VERIFY_MAX_MONTHS) or mk.VERIFY_MAX_MONTHS
+    if action == "approve":
+        if d.get("confirmed_phone") is not True: raise ValidationError("Confirm that you spoke to the seller on the number shown")
+        if d.get("checked_proof") is not True: raise ValidationError("Confirm that you saw or checked the supporting evidence")
+    return {"action": action, "note": note, "months": months}
+
+
+
+# ---------- Smart Planting Calendar ----------
+PLAN_STATUSES = ("pending", "done", "skipped")
+
+def planner_payload(d: dict) -> dict:
+    slug = _text(d, "crop_slug", 40, True)
+    if not re.fullmatch(r"[a-z_]{2,40}", slug): raise ValidationError("crop_slug is not valid")
+    planting = _date(d, "planting_date", True)
+    today = date.today()
+    if planting < (today - timedelta(days=180)).isoformat(): raise ValidationError("planting_date is more than 6 months ago")
+    if planting > (today + timedelta(days=400)).isoformat(): raise ValidationError("planting_date is too far ahead")
+    water = d.get("water") or "rainfed"
+    if water not in _pp.WATER: raise ValidationError("water must be rainfed or irrigated")
+    zone = d.get("savanna_zone") or None
+    if zone is not None and zone not in _pp.SAVANNA_ZONES: raise ValidationError("savanna_zone is not valid")
+    group = d.get("maturity_group") or None
+    if group is not None and group not in _pp.MATURITY_GROUPS: raise ValidationError("maturity_group is not valid")
+    out = {"crop_slug": slug, "planting_date": planting, "water": water, "savanna_zone": zone, "maturity_group": group,
+           "maturity_days": _int(d, "maturity_days", 30, 400), "size_ha": _num(d, "size_ha", 0.001, 100000),
+           "variety": _text(d, "variety", 80), "state": nigeria_state(d)}
+    if d.get("farm_crop_id"): out["farm_crop_id"] = uuid_str(d["farm_crop_id"], "farm_crop_id")
+    return out
+
+def plan_task_payload(d: dict) -> dict:
+    st = d.get("status")
+    if st not in PLAN_STATUSES: raise ValidationError("status must be pending, done or skipped")
+    return {"status": st, "note": _text(d, "note", 300)}
