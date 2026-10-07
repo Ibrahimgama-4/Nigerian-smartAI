@@ -1,0 +1,45 @@
+{
+  "_status": "draft_unreviewed",
+  "_note": "Compiled from news reports of NAFDAC announcements, not from the official gazette. NAFDAC can change a ruling at any time: confirm with NAFDAC or your state agriculture office before you rely on it. 'Not on this list' NEVER means a product is registered or safe.",
+  "retrieved": "2026-10-07",
+  "restricted_ingredients": [
+    {"ingredient": "Paraquat", "aliases": ["paraquat", "gramoxone", "paraquat dichloride"],
+     "status": "banned", "effective": "2024-01-01",
+     "summary": "NAFDAC announced a ban on paraquat, effective 1 January 2024, after earlier announcing a phase-out plan for its manufacture, import, sale and use.",
+     "sources": [{"name": "Tech Economy: NAFDAC to ban, phase out toxic pesticides", "url": "https://techeconomy.ng/nafdac-to-ban-phase-out-toxic-pesticides"},
+                 {"name": "The Guardian Nigeria: NAFDAC moves to avert dangers of pesticides, agrochemical usage", "url": "https://guardian.ng/news/nafdac-moves-to-avert-dangers-of-pesticides-agrochemical-usage-dg/"}]},
+    {"ingredient": "Chlorpyrifos", "aliases": ["chlorpyrifos", "chlorpyriphos", "chlorpyrifos-ethyl"],
+     "status": "banned", "effective": "2024-11-01",
+     "summary": "NAFDAC announced a ban on chlorpyrifos, effective 1 November 2024.",
+     "sources": [{"name": "Tech Economy: NAFDAC to ban, phase out toxic pesticides", "url": "https://techeconomy.ng/nafdac-to-ban-phase-out-toxic-pesticides"}]},
+    {"ingredient": "Atrazine", "aliases": ["atrazine"],
+     "status": "banned", "effective": "2025-01-01",
+     "summary": "NAFDAC announced a ban on atrazine, effective 1 January 2025.",
+     "sources": [{"name": "Tech Economy: NAFDAC to ban, phase out toxic pesticides", "url": "https://techeconomy.ng/nafdac-to-ban-phase-out-toxic-pesticides"}]},
+    {"ingredient": "Dichlorvos (DDVP)", "aliases": ["dichlorvos", "ddvp"],
+     "status": "restricted", "effective": null,
+     "summary": "NAFDAC banned the 100 ml pack size, stopped sales in open markets and supermarkets, and ordered manufacturers to pull stock. Other uses are not covered by this note.",
+     "sources": [{"name": "The Guardian Nigeria: NAFDAC moves to avert dangers of pesticides, agrochemical usage", "url": "https://guardian.ng/news/nafdac-moves-to-avert-dangers-of-pesticides-agrochemical-usage-dg/"}]},
+    {"ingredient": "Tallow amine (inside glyphosate products)", "aliases": ["tallow amine", "tallowamine", "poea", "polyoxyethylene tallow amine"],
+     "status": "banned_as_inert", "effective": "2020-01-01",
+     "summary": "NAFDAC banned tallow amine as an inert ingredient in glyphosate formulations from 1 January 2020. The label of a glyphosate product may list it.",
+     "sources": [{"name": "The Guardian Nigeria: NAFDAC moves to avert dangers of pesticides, agrochemical usage", "url": "https://guardian.ng/news/nafdac-moves-to-avert-dangers-of-pesticides-agrochemical-usage-dg/"}]}
+  ],
+  "pending": "NAFDAC has also said it started an action plan to ban or phase out 12 more active ingredients and re-classify four others. The names are not in the sources we used, so none are listed here.",
+  "dealer_rule": {
+    "text": "NAFDAC has said crop-protection products may be sold only through NAFDAC-approved or accredited agrochemical dealers, and that dealers must be listed.",
+    "source": {"name": "The Guardian Nigeria: NAFDAC moves to avert dangers of pesticides, agrochemical usage", "url": "https://guardian.ng/news/nafdac-moves-to-avert-dangers-of-pesticides-agrochemical-usage-dg/"}
+  },
+  "checklist": [
+    {"id": "dealer", "text": "Buy from a shop that sells agrochemicals as its business, and ask whether it is an approved or accredited dealer. Avoid open-market hawkers and unlabelled refills."},
+    {"id": "label", "text": "The pack must have a printed label in English with the product name, active ingredient, manufacturer, batch number, expiry date and a NAFDAC registration number. No label, or a label that is peeling or stuck on crooked, is a warning sign."},
+    {"id": "seal", "text": "The pack should be sealed and undamaged. Do not buy opened, repacked or decanted products."},
+    {"id": "expiry", "text": "Check the expiry date and that the batch number on the pack matches the one on the label."},
+    {"id": "price", "text": "A price far below what other shops charge for the same product is a warning sign."},
+    {"id": "receipt", "text": "Ask for a receipt that names the product and the shop, and keep it with a photo of the pack and batch number. You need this to report a problem."},
+    {"id": "fertilizer", "text": "For fertiliser, check the bag is stitched and printed, shows the grade (for example N-P-K numbers), the producer and the weight, and that the contents look like the product (even granules, no wet lumps, no dust or stones)."},
+    {"id": "ppe", "text": "Whatever you buy, follow the label for gloves, mask and washing, and keep chemicals away from food, children and animals."}
+  ],
+  "report_note": "To report a suspected fake or banned product, tell NAFDAC through its official website (nafdac.gov.ng) or its state office. Contact numbers are not listed here because we could not verify them from an official source. You can also send a private report in this app: only you and the app administrators can see it.",
+  "official_site": "https://www.nafdac.gov.ng"
+}
