@@ -1,0 +1,459 @@
+{
+ "_status": "draft_unreviewed",
+ "retrieved": "2026-10-07",
+ "_note": "Task timings come from two IITA guides for northern Nigeria (maize and cowpea). Tasks marked 'planning default' are not in the guide and are our own scheduling choice. Crops not listed here have NO sourced task schedule, and the app says so instead of guessing.",
+ "weather_rules_note": "The weather shifts are general good-practice rules (not from the guides) that use the same unreviewed thresholds as the farm weather advice. A shift never moves a task past the end of its window.",
+ "sources": {
+  "iita_maize": {
+   "name": "IITA, Guide to Maize Production in Northern Nigeria",
+   "url": "https://www.iita.org/wp-content/uploads/2020/07/Guide-to-Maize-Production-in-Northern-Nigeria.pdf"
+  },
+  "iita_cowpea": {
+   "name": "IITA, Guide to Cowpea Production in Northern Nigeria",
+   "url": "https://www.iita.org/wp-content/uploads/2020/07/Guide-to-Cowpea-production-in-Northern-Nigeria.pdf"
+  }
+ },
+ "savanna_zones": {
+  "sahel": "Sahel",
+  "sudan": "Sudan savanna",
+  "northern_guinea": "Northern Guinea savanna",
+  "southern_guinea": "Southern Guinea savanna"
+ },
+ "crops": {
+  "maize": {
+   "source": "iita_maize",
+   "grain_harvest_days": [
+    80,
+    110
+   ],
+   "harvest_note": "80 to 110 days after planting depending on the variety (IITA, p. 14). Enter the days on your seed pack for a better date.",
+   "seed_kg_per_ha": [
+    15,
+    20,
+    10
+   ],
+   "planting_windows": [
+    {
+     "zone": "sudan",
+     "text": "first to second week of July",
+     "start": [
+      7,
+      1
+     ],
+     "end": [
+      7,
+      14
+     ],
+     "page": 7
+    },
+    {
+     "zone": "northern_guinea",
+     "text": "last week of June to first week of July",
+     "start": [
+      6,
+      24
+     ],
+     "end": [
+      7,
+      7
+     ],
+     "page": 7
+    },
+    {
+     "zone": "southern_guinea",
+     "text": "mid-May to second week of June",
+     "start": [
+      5,
+      15
+     ],
+     "end": [
+      6,
+      14
+     ],
+     "page": 7
+    }
+   ],
+   "tasks": [
+    {
+     "key": "clear_land",
+     "title": "Clear the land well before the rains",
+     "category": "land_prep",
+     "from": -28,
+     "to": -8,
+     "basis": "planning_default",
+     "source_says": "Land clearing should be done well ahead of the rains. The guide gives no number of days, so the dates here are a planning default.",
+     "page": 7,
+     "rain": "field"
+    },
+    {
+     "key": "make_ridges",
+     "title": "Make ridges as soon as the rains start",
+     "category": "land_prep",
+     "from": -7,
+     "to": -1,
+     "basis": "planning_default",
+     "source_says": "Ridges are made as soon as the rains start. The guide gives no number of days, so the dates here are a planning default.",
+     "page": 7,
+     "rain": "field"
+    },
+    {
+     "key": "plant",
+     "title": "Plant (2 plants per stand at 75 x 50 cm; thin to 2)",
+     "category": "planting",
+     "from": 0,
+     "to": 3,
+     "basis": "source",
+     "source_says": "Plant as soon as the rains are established, preferably straight after a good rain. Spacing 75 x 50 cm with 2 plants per stand. The 3-day window is a planning default.",
+     "page": 7,
+     "rain": "planting"
+    },
+    {
+     "key": "herbicide",
+     "title": "If you use a pre-emergence herbicide, apply it now",
+     "category": "spraying",
+     "from": 0,
+     "to": 1,
+     "basis": "source",
+     "source_says": "Pre-emergence herbicide goes on immediately after planting or the next day. Follow the product label.",
+     "page": 13,
+     "rain": "spray",
+     "optional": true
+    },
+    {
+     "key": "basal_fertilizer",
+     "title": "Apply the first (basal) fertiliser dose",
+     "category": "top_dressing",
+     "from": 0,
+     "to": 7,
+     "basis": "source",
+     "source_says": "The first dose is applied at planting or within the first week. Delay beyond week 1 can sharply reduce grain yield. See Soil & Fertilizer for rates.",
+     "page": 10,
+     "rain": "fertilizer"
+    },
+    {
+     "key": "thin",
+     "title": "Thin to 2 plants per stand",
+     "category": "thinning",
+     "from": 14,
+     "to": 21,
+     "basis": "planning_default",
+     "source_says": "Thin 1 to 2 weeks after germination. We assume seedlings come up in about a week, so this is a planning default.",
+     "page": 10,
+     "rain": "field"
+    },
+    {
+     "key": "weed_1",
+     "title": "First weeding",
+     "category": "weeding",
+     "from": 14,
+     "to": 17,
+     "basis": "source",
+     "source_says": "Two manual weedings are recommended, the first at 2 weeks after planting.",
+     "page": 12,
+     "rain": "field"
+    },
+    {
+     "key": "scout_faw_1",
+     "title": "Scout for fall armyworm (check 1 of 3)",
+     "category": "pest_scouting",
+     "from": 7,
+     "to": 9,
+     "basis": "planning_default",
+     "source_says": "Insecticides can control fall armyworm if applied in the first 3 weeks after planting, so check often early. Weekly checks are a planning default.",
+     "page": 6,
+     "rain": "field"
+    },
+    {
+     "key": "scout_faw_2",
+     "title": "Scout for fall armyworm (check 2 of 3)",
+     "category": "pest_scouting",
+     "from": 14,
+     "to": 16,
+     "basis": "planning_default",
+     "source_says": "Insecticides can control fall armyworm if applied in the first 3 weeks after planting. Weekly checks are a planning default.",
+     "page": 6,
+     "rain": "field"
+    },
+    {
+     "key": "scout_faw_3",
+     "title": "Scout for fall armyworm (check 3 of 3)",
+     "category": "pest_scouting",
+     "from": 21,
+     "to": 23,
+     "basis": "planning_default",
+     "source_says": "Insecticides can control fall armyworm if applied in the first 3 weeks after planting. Weekly checks are a planning default.",
+     "page": 6,
+     "rain": "field"
+    },
+    {
+     "key": "weed_2",
+     "title": "Second weeding",
+     "category": "weeding",
+     "from": 28,
+     "to": 35,
+     "basis": "source",
+     "source_says": "The second weeding is at 4 to 5 weeks after planting.",
+     "page": 12,
+     "rain": "field"
+    },
+    {
+     "key": "top_dress",
+     "title": "Top-dress with nitrogen (second fertiliser dose)",
+     "category": "top_dressing",
+     "from": 28,
+     "to": 35,
+     "basis": "source",
+     "source_says": "The second nitrogen dose goes on between 4 and 5 weeks after planting in the Guinea savanna zones.",
+     "page": 10,
+     "rain": "fertilizer",
+     "variants": [
+      {
+       "when": {
+        "savanna_zone": "sudan",
+        "maturity_group": "extra_early"
+       },
+       "from": 21,
+       "to": 28,
+       "says": "In the Sudan savanna, extra-early varieties get the second nitrogen dose between 3 and 4 weeks after planting."
+      }
+     ]
+    },
+    {
+     "key": "harvest_prep",
+     "title": "Prepare drying space, bags and labour for harvest",
+     "category": "harvest_prep",
+     "from": -14,
+     "to": -1,
+     "basis": "planning_default",
+     "source_says": "Maize kept for later should be dried to 10 to 12 percent moisture. Starting two weeks before harvest is a planning default.",
+     "page": 16,
+     "rain": "field",
+     "anchor": "harvest_start"
+    },
+    {
+     "key": "harvest",
+     "title": "Harvest when the grain is dry enough",
+     "category": "harvest",
+     "from": 0,
+     "to": 0,
+     "basis": "source",
+     "source_says": "Harvest as soon as the grain is dry enough, 80 to 110 days after planting depending on the variety. Use the days on your seed pack if you know them.",
+     "page": 14,
+     "rain": "field",
+     "anchor": "harvest_start",
+     "anchor_end": "harvest_end"
+    }
+   ]
+  },
+  "cowpea": {
+   "source": "iita_cowpea",
+   "maturity_groups": {
+    "early": [
+     60,
+     70
+    ],
+    "medium": [
+     70,
+     75
+    ],
+    "late": [
+     80,
+     85
+    ]
+   },
+   "harvest_note": "Early 60 to 70 days, medium 70 to 75 days, late 80 to 85 days after planting (IITA, Table 3, p. 10). Enter the days on your seed pack for a better date.",
+   "planting_windows": [
+    {
+     "zone": "sahel",
+     "text": "14 to 28 June (determinate varieties)",
+     "start": [
+      6,
+      14
+     ],
+     "end": [
+      6,
+      28
+     ],
+     "page": 7
+    },
+    {
+     "zone": "sudan",
+     "text": "25 June to 24 July (determinate varieties)",
+     "start": [
+      6,
+      25
+     ],
+     "end": [
+      7,
+      24
+     ],
+     "page": 7
+    },
+    {
+     "zone": "northern_guinea",
+     "text": "25 July to 8 August (determinate varieties)",
+     "start": [
+      7,
+      25
+     ],
+     "end": [
+      8,
+      8
+     ],
+     "page": 7
+    },
+    {
+     "zone": "southern_guinea",
+     "text": "25 to 30 August (determinate varieties)",
+     "start": [
+      8,
+      25
+     ],
+     "end": [
+      8,
+      30
+     ],
+     "page": 7
+    }
+   ],
+   "tasks": [
+    {
+     "key": "clear_land",
+     "title": "Clear the field (or spray glyphosate at least 10 days before planting)",
+     "category": "land_prep",
+     "from": -21,
+     "to": -10,
+     "basis": "planning_default",
+     "source_says": "Clear shrubs and stubble. If you spray glyphosate, leave the field at least 10 days before planting so the weeds die. Follow the product label.",
+     "page": 3,
+     "rain": "spray"
+    },
+    {
+     "key": "phosphorus",
+     "title": "Apply phosphorus fertiliser (during land preparation or just before sowing)",
+     "category": "top_dressing",
+     "from": -7,
+     "to": 0,
+     "basis": "source",
+     "source_says": "Phosphorus is applied during land preparation or just before sowing. See Soil & Fertilizer for rates.",
+     "page": 15,
+     "rain": "fertilizer"
+    },
+    {
+     "key": "plant",
+     "title": "Plant (spacing depends on how your variety grows: erect, semi-erect or spreading)",
+     "category": "planting",
+     "from": 0,
+     "to": 3,
+     "basis": "source",
+     "source_says": "Plant when the rains are established. Spacing: erect 50 x 20 cm, semi-erect 75 x 25 to 30 cm, spreading 75 x 40 cm. The 3-day window is a planning default.",
+     "page": 12,
+     "rain": "planting"
+    },
+    {
+     "key": "starter_npk",
+     "title": "Apply the starter nitrogen (NPK 15:15:15) at planting",
+     "category": "top_dressing",
+     "from": 0,
+     "to": 3,
+     "basis": "source",
+     "source_says": "A small amount of nitrogen as NPK 15:15:15 is mixed into the soil at planting.",
+     "page": 15,
+     "rain": "fertilizer"
+    },
+    {
+     "key": "weed_1",
+     "title": "First weeding",
+     "category": "weeding",
+     "from": 14,
+     "to": 17,
+     "basis": "source",
+     "source_says": "Weed twice with the hoe, the first at 2 weeks after planting.",
+     "page": 16,
+     "rain": "field"
+    },
+    {
+     "key": "scout_1",
+     "title": "Scout for pests and flower buds",
+     "category": "pest_scouting",
+     "from": 21,
+     "to": 27,
+     "basis": "planning_default",
+     "source_says": "The guide does not give scouting dates. Checking the field before the first spray is a planning default.",
+     "page": 36,
+     "rain": "field"
+    },
+    {
+     "key": "weed_2",
+     "title": "Second weeding",
+     "category": "weeding",
+     "from": 28,
+     "to": 35,
+     "basis": "source",
+     "source_says": "The second weeding is at 4 to 5 weeks after planting.",
+     "page": 16,
+     "rain": "field"
+    },
+    {
+     "key": "spray_1",
+     "title": "First insecticide spray (flower buds starting)",
+     "category": "spraying",
+     "from": 30,
+     "to": 35,
+     "basis": "source",
+     "source_says": "The first spray is between 30 and 35 days after planting, when flower buds start. Follow the product label and safety advice.",
+     "page": 36,
+     "rain": "spray"
+    },
+    {
+     "key": "spray_2",
+     "title": "Second insecticide spray (full flowering and podding)",
+     "category": "spraying",
+     "from": 40,
+     "to": 45,
+     "basis": "source",
+     "source_says": "The second spray is 10 days after the first, in full flowering and podding. The 5-day window is a planning default.",
+     "page": 36,
+     "rain": "spray"
+    },
+    {
+     "key": "spray_3",
+     "title": "Third spray, only if needed",
+     "category": "spraying",
+     "from": 50,
+     "to": 55,
+     "basis": "source",
+     "source_says": "A third spray, only when necessary, 10 days after the second for medium varieties. The 5-day window is a planning default.",
+     "page": 36,
+     "rain": "spray",
+     "optional": true
+    },
+    {
+     "key": "harvest_prep",
+     "title": "Get hermetic (PICS) storage bags ready",
+     "category": "harvest_prep",
+     "from": -10,
+     "to": -1,
+     "basis": "planning_default",
+     "source_says": "Store cowpea in hermetic bags and keep rodents away. Getting bags ready ten days before harvest is a planning default.",
+     "page": 46,
+     "rain": "field",
+     "anchor": "harvest_start"
+    },
+    {
+     "key": "harvest",
+     "title": "Harvest when the pods are fully mature and dry",
+     "category": "harvest",
+     "from": 0,
+     "to": 0,
+     "basis": "source",
+     "source_says": "Harvest as soon as pods are fully mature and dry, to avoid infestation in the field.",
+     "page": 43,
+     "rain": "field",
+     "anchor": "harvest_start",
+     "anchor_end": "harvest_end"
+    }
+   ]
+  }
+ }
+}
