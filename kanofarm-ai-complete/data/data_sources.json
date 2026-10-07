@@ -1,0 +1,158 @@
+{
+  "sources": [
+    {
+      "name": "Open-Meteo Forecast API",
+      "url": "https://open-meteo.com",
+      "data_type": "MODELLED",
+      "coverage": "Global (~11 km grid)",
+      "update_frequency": "Hourly model updates",
+      "license": "Data CC BY 4.0",
+      "free_tier": "Non-commercial only; <10,000 calls/day, 5,000/hour, 600/minute; no key",
+      "last_verified": "2026-09-24",
+      "limitations": "Model data, not a ground-station observation. No ward-level resolution. Free tier is not for commercial use."
+    },
+    {
+      "name": "Open-Meteo Historical Weather API",
+      "url": "https://open-meteo.com/en/docs/historical-weather-api",
+      "data_type": "HISTORICAL (reanalysis, modelled)",
+      "coverage": "Global, 1940 to present; ERA5 ~25 km, ERA5-Land ~11 km",
+      "update_frequency": "Daily with about 5 days delay",
+      "license": "Data CC BY 4.0",
+      "free_tier": "Same non-commercial free-tier limits as the forecast API",
+      "last_verified": "2026-09-24",
+      "limitations": "Reanalysis, not rain-gauge data; grid cells are far larger than a farm. The last few days come from recent model output instead."
+    },
+    {
+      "name": "PlantDoc dataset",
+      "url": "https://universe.roboflow.com/pjtrs/plantdoc-6hbvl",
+      "data_type": "Training images",
+      "coverage": "13 plant species, ~2.6k images",
+      "update_frequency": "Static",
+      "license": "CC BY 4.0",
+      "free_tier": "Free",
+      "last_verified": "2026-09-24",
+      "limitations": "Not validated for Nigerian field conditions. Does not cover several priority crops (verify class list)."
+    },
+    {
+      "name": "PlantVillage dataset",
+      "url": "https://github.com/spMohanty/PlantVillage-Dataset",
+      "data_type": "Training images",
+      "coverage": "Laboratory-condition leaf images",
+      "update_frequency": "Static",
+      "license": "Not yet verified for the source used",
+      "free_tier": "Free",
+      "last_verified": "not verified",
+      "limitations": "Controlled backgrounds; poor proxy for field conditions. Pretraining only."
+    },
+    {
+      "name": "NAFDAC pesticide register (NARPAD / Green Book)",
+      "url": "https://www.nafdac.gov.ng",
+      "data_type": "Regulatory register",
+      "coverage": "Nigeria",
+      "update_frequency": "Not confirmed",
+      "license": "Reuse terms not confirmed",
+      "free_tier": "Public lookup; no API found",
+      "last_verified": "not verified",
+      "limitations": "No verified bulk/API access. The app's pesticide list is empty until entries are added with a source and verification date."
+    },
+    {
+      "name": "Crop calendar (draft entries)",
+      "url": "https://www.agriculturenigeria.com/?p=21759",
+      "data_type": "Secondary/general",
+      "coverage": "Northern Nigeria / national",
+      "update_frequency": "Unknown",
+      "license": "Not checked",
+      "free_tier": "n/a",
+      "last_verified": "2026-09-24 (retrieved, not reviewed)",
+      "limitations": "Not from an official agency. Not reviewed for Kano. Shown as DRAFT."
+    },
+    {
+      "name": "Supabase",
+      "url": "https://supabase.com",
+      "data_type": "Infrastructure (auth + database)",
+      "coverage": "n/a",
+      "update_frequency": "n/a",
+      "license": "n/a",
+      "free_tier": "Free plan limits apply; check current pricing",
+      "last_verified": "not verified",
+      "limitations": "Free projects can pause after inactivity; verify current terms."
+    },
+    {
+      "name": "Vercel",
+      "url": "https://vercel.com",
+      "data_type": "Infrastructure (hosting)",
+      "coverage": "n/a",
+      "update_frequency": "n/a",
+      "license": "n/a",
+      "free_tier": "Hobby plan is for non-commercial use",
+      "last_verified": "not verified",
+      "limitations": "Request body limits apply to image uploads; commercial use needs a paid plan."
+    },
+    {
+      "name": "Anthropic API (optional assistant)",
+      "url": "https://www.anthropic.com",
+      "data_type": "AI text generation",
+      "coverage": "n/a",
+      "update_frequency": "n/a",
+      "license": "Commercial API terms",
+      "free_tier": "None (paid, pay per use)",
+      "last_verified": "not verified",
+      "limitations": "AI-generated text can be wrong. Assistant is off unless a key is configured."
+    },
+    {
+      "name": "AfroTools Nigeria agriculture dataset",
+      "url": "https://afrotools.com/agriculture/harvest-date/nigeria",
+      "data_type": "Secondary/general (planning reference)",
+      "coverage": "Nigeria, by the 6 geopolitical zones",
+      "update_frequency": "Unknown",
+      "license": "Not checked",
+      "free_tier": "Public page, no API found",
+      "last_verified": "2026-09-25 (retrieved, not reviewed)",
+      "limitations": "The site itself calls this a planning reference, not agronomic advice, citing FAO/CGIAR/extension sources without giving specifics. Not an official government dataset. Rainfall figures are broad zone averages, not a measurement for any farm. Used here only for the zone-to-state grouping and each zone's commonly grown crops."
+    },
+    {
+      "name": "NAFDAC pesticide ban announcements (as reported by Tech Economy and The Guardian Nigeria)",
+      "url": "https://techeconomy.ng/nafdac-to-ban-phase-out-toxic-pesticides",
+      "data_type": "SECONDARY_NEWS",
+      "coverage": "Nigeria",
+      "update_frequency": "Static snapshot",
+      "license": "News articles, linked not copied",
+      "free_tier": "Free to read",
+      "last_verified": "2026-10-07",
+      "limitations": "News reports of NAFDAC announcements, not the official gazette. 12 further active ingredients are under a phase-out plan but not named in the sources. Confirm with NAFDAC."
+    },
+    {
+      "name": "Tarfa et al. 2017, Optimizing Fertilizer Use within the Context of ISFM in Nigeria (OFRA), Table 12.4",
+      "url": "https://agronomy.unl.edu/sites/unl.edu.ianr.agronomy-horticulture/files/media/file/OFRA%20Chapter%2012_Nigeria_HR.pdf",
+      "data_type": "PUBLISHED_RESEARCH",
+      "coverage": "Nigeria",
+      "update_frequency": "Static snapshot",
+      "license": "Published chapter, linked not copied",
+      "free_tier": "Free to read",
+      "last_verified": "2026-10-07",
+      "limitations": "Only the 'apply no P (Bray-1 P above 15 mg/kg) / no K (exchangeable K above 0.17 cmol/kg)' levels are used. Single source, not agronomist-reviewed. Its fertiliser rate tables are NOT built into the app."
+    },
+    {
+      "name": "IITA, Guide to Maize Production in Northern Nigeria",
+      "url": "https://www.iita.org/wp-content/uploads/2020/07/Guide-to-Maize-Production-in-Northern-Nigeria.pdf",
+      "data_type": "PUBLISHED_GUIDE",
+      "coverage": "Northern Nigeria",
+      "update_frequency": "Static snapshot",
+      "license": "Published guide, linked and summarised, not copied",
+      "free_tier": "Free to read",
+      "last_verified": "2026-10-07",
+      "limitations": "Source of the task timings in the Smart Planting Calendar. Where the guide gives no number the app labels the date a 'planning default'. Summaries were checked by reading, not by an agronomist."
+    },
+    {
+      "name": "IITA, Guide to Cowpea Production in Northern Nigeria",
+      "url": "https://www.iita.org/wp-content/uploads/2020/07/Guide-to-Cowpea-production-in-Northern-Nigeria.pdf",
+      "data_type": "PUBLISHED_GUIDE",
+      "coverage": "Northern Nigeria",
+      "update_frequency": "Static snapshot",
+      "license": "Published guide, linked and summarised, not copied",
+      "free_tier": "Free to read",
+      "last_verified": "2026-10-07",
+      "limitations": "Source of the task timings in the Smart Planting Calendar. Where the guide gives no number the app labels the date a 'planning default'. Summaries were checked by reading, not by an agronomist."
+    }
+  ]
+}
